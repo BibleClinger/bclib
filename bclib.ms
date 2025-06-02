@@ -14,7 +14,7 @@ bigImport = function(directInput)
     env.importPaths.remove 0
     env.importPaths.remove 0
     
-    outer.remove("bigImport")
+    outer.remove "bigImport"
 end function
 
 bigImport (locals == globals)
