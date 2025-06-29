@@ -11,7 +11,7 @@ The easy way:
 
 ## Using the Library
 
-There are two ways of importing the this module. Either one will work if you are using `/usr`
+There are two ways of importing this module. Either one will work if you are using `/usr`
 
 * Importing bclib via `import "bclib"`. This will only work if you followed the easy installation above.
 * Executing the script `bclib.ms`. This will work if used either `/usr` or `/usr2` and followed the correct directory layout.
