@@ -5,16 +5,18 @@ A module for Mini Micro written in MiniScript
 
 The easy way:
 
-1. Mount a directory to `/usr`
-2. Create a directory inside that one called `lib`
+1. Mount a directory in Mini Micro to `/usr`.
+2. Create a directory inside that one called `lib`.
 3. Download `bclib.ms` and the `bclib` directory from this GitHub repo and place them in the `lib` directory mentioned above.
 
 ## Using the Library
 
-There are two ways of importing this module. Either one will work if you are using `/usr`
+There are two ways of importing this module. Either one will work if you are using `/usr` as opposed to `/usr2`.
 
-* Importing bclib via `import "bclib"`. This will only work if you followed the easy installation above.
-* Executing the script `bclib.ms`. This will work if used either `/usr` or `/usr2` and followed the correct directory layout.
+* Importing bclib via `import "bclib"`. (This will only work if you followed the easy installation instructions above.)
+* Executing the script `bclib.ms`. This will work whether if the lib was mounted to `/usr/lib` or `/usr2/lib`. See the section below "Library in /usr2".
+
+## Module Loader
 
 `bclib.ms` adds `/usr/lib/bclib` and `/usr2/lib/bclib` to `env.importPaths`, attempts to import all of the bclib modules, libraries, and classes, and then removes the import paths.
 
