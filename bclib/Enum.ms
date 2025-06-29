@@ -3,7 +3,7 @@ Enum.inverse = null // map of inverted options
 Enum.k = null // list of keys, enum names
 Enum.v = null // list of values, enum indexes
 
-make = function(names, numericals=null)
+Create = function(names, numericals=null)
     newEnum = new Enum
     newEnum.inverse = {}
     newEnum.k = []
@@ -23,7 +23,7 @@ make = function(names, numericals=null)
     // return null // implied
 end function
 
-create = @make
+Make = @Create
 
 Enum.names = function(self, readOnly=false)
     if readOnly then return self.k
@@ -43,3 +43,6 @@ Enum.getName = function(self, id)
     if self.inverse.hasIndex(id) then return self.inverse[id]
     // return null // implied
 end function
+
+
+s = Enum.x
