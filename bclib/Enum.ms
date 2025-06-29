@@ -43,6 +43,3 @@ Enum.getName = function(self, id)
     if self.inverse.hasIndex(id) then return self.inverse[id]
     // return null // implied
 end function
-
-
-s = Enum.x
