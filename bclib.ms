@@ -4,19 +4,27 @@ bigImport = function(directInput)
 
     import "Enum"
     import "TextLabel"
+    import "Functions"
+
+    blackmap = {"blackmap":1, "directInput":1, "_":1} // Oddities included in locals for some reason (and itself)
 
     if directInput then // Invoked by script
         globals.bclib = {}
-        globals.bclib.Enum = Enum
-        globals.bclib.TextLabel = TextLabel
+        // globals.bclib.Enum = Enum
+        // globals.bclib.TextLabel = TextLabel
+        for e in locals.indexes
+            if not blackmap.hasIndex(e) then globals.bclib[e] = locals[e]
+        end for
     else // Invoked by import directive
-        outer.Enum = Enum
-        outer.TextLabel = TextLabel
+        // outer.Enum = Enum
+        // outer.TextLabel = TextLabel
+        for e in locals.indexes
+            if not blackmap.hasIndex(e) then outer[e] = locals[e]
+        end for
     end if
 
     env.importPaths.remove 0
     env.importPaths.remove 0
-    
     outer.remove "bigImport"
 end function
 

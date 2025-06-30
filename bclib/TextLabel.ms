@@ -1,17 +1,45 @@
 TextLabel = {}
 
-Create = function(td, column=0, row=0, maxLen=null, eraseChar=" ")
+Create = function(column, row=null)
+    if column isa number and row isa number then
+        args = {"column":column, "row": row} // column, row
+    else
+        args = column
+    end if
+    parse = @bclib.Functions.parseMapArgs // args map parser
+
     instance = new TextLabel
-    instance.td = td
-    instance.row = row
-    instance.column = column
-    if eraseChar == null then eraseChar = " "
-    if not eraseChar isa string then eraseChar = str(eraseChar)
-    if eraseChar.len > 1 then eraseChar = eraseChar[0]
-    instance.eraseChar = eraseChar
+    instance.td = parse(args, "display", globals.text)
+    instance.column = parse(args, "column", 0)
+    instance.row = parse(args, "row", 0)
+    instance.eraseChar = parse(args, "eraseChar", " ")
+    instance.terminatorChar = parse(args, "terminatorChar", "")
+    instance.color = parse(args, "color", null) // Potential future feature
+    instance.bgcolor = parse(args, "bgcolor", null) // Potential future feature
+    instance.maxLen = parse(args, "maxLen", -1)
+    instance.prefix = parse(args, "prefix", "")
+    text = parse(args, "text", null)
+
+    if instance.eraseChar == null then
+        instance.eraseChar = " "
+    else if not instance.eraseChar isa string then
+        instance.eraseChar = str(instance.eraseChar)
+    else if instance.eraseChar.len > 1 then
+        instance.eraseChar = instance.eraseChar[0]
+    end if
+
+    if instance.terminatorChar == null then
+        instance.terminatorChar = ""
+    else if not instance.terminatorChar isa string then
+        instance.terminatorChar = str(instance.terminatorChar)
+    else if instance.terminatorChar.len > 1 then
+        instance.terminatorChar = instance.terminatorChar[0]
+    end if
+    
     // instance.lastLen = 0
     instance.lastText = ""
-    instance.maxLen = maxLen
+
+    if text != null then instance.print text
     return instance
 end function
 
@@ -23,42 +51,57 @@ TextLabel.print = function(text)
     self.td.row = self.row 
     self.td.column = self.column
 
-    if not text isa string then text = str(text)
+    nullMessage = text == null
+    if nullMessage then
+        text = ""
+    else if not text isa string then
+        text = str(text)
+    end if
     if self.maxLen != null and self.maxLen isa number and self.maxLen > 0 and text.len > self.maxLen then text = text[0:self.maxLen]
 
-    self.td.print text, ""
-    dif = text.len - self.lastText.len
-    if dif < 0 then self.td.print self.eraseChar * abs(dif), ""
-    self.lastText = text
+    if nullMessage then
+        self.td.print self.eraseChar * (self.prefix.len + self.lastText.len)
+    else
+        self.td.print self.prefix + text, self.terminatorChar
+        dif = text.len - self.lastText.len
+        if dif < 0 then self.td.print self.eraseChar * abs(dif), self.terminatorChar
+    end if
+
+    if not (nullMessage or text.len == 0) then self.lastText = text
 
     self.td.row = oldRow
     self.td.column = oldColumn
 end function
 
-TextLabel.unsafePrint = function(text)
-    // Unsure if we want this exposed
+TextLabel.clear = function(ignorePrefix=false)
+    if ignorePrefix then self.print "" else self.print
 end function
 
-TextLabel.clear = function
-    self.td.row = self.row 
-    self.td.column = self.column
-    self.td.print self.eraseChar * self.lastText.len, ""
-end function
-
-TextLabel.setOrigin = function(column, row, clear=true)
-    if clear then self.clear
-    self.row = row
-    self.column = column
-end function
-
-TextLabel.setDisplay = function(display, clear=true)
-    if clear then self.clear
+TextLabel.setDisplay = function(display)
+    self.clear
     self.td = display
+    self.print self.lastText
 end function
 
-TextLabel.move = function(column, row, clear=true)
-    self.setOrigin row, column, clear
+TextLabel.setPrefix = function(prefix)
+    self.clear
+    self.prefix = prefix
+    self.print self.lastText
+end function
+
+TextLabel.move = function(column, row)
+    self.clear
+    self.column = column
+    self.row = row
+
+    oldRow = self.td.row
+    oldColumn = self.td.column
+
     self.td.row = self.row
     self.td.column = self.column
+
     self.td.print self.lastText, ""
+
+    self.td.row = oldRow
+    self.td.column = oldColumn
 end function
