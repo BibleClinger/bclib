@@ -10,14 +10,10 @@ bigImport = function(directInput)
 
     if directInput then // Invoked by script
         globals.bclib = {}
-        // globals.bclib.Enum = Enum
-        // globals.bclib.TextLabel = TextLabel
         for e in locals.indexes
             if not blackmap.hasIndex(e) then globals.bclib[e] = locals[e]
         end for
     else // Invoked by import directive
-        // outer.Enum = Enum
-        // outer.TextLabel = TextLabel
         for e in locals.indexes
             if not blackmap.hasIndex(e) then outer[e] = locals[e]
         end for
