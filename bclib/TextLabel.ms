@@ -6,6 +6,8 @@ Create = function(column, row=null)
     else
         args = column
     end if
+
+    if not args isa map then return null // We didn't get what we needed
     parse = @bclib.Functions.parseMapArgs // args map parser
 
     instance = new TextLabel
@@ -35,7 +37,13 @@ Create = function(column, row=null)
     else if instance.terminatorChar.len > 1 then
         instance.terminatorChar = instance.terminatorChar[0]
     end if
-    
+
+    if instance.prefix == null then
+        instance.prefix = ""
+    else if not instance.prefix isa string then
+        instance.prefix = str(instance.prefix)
+    end if
+
     // instance.lastLen = 0
     instance.lastText = ""
 
@@ -77,19 +85,24 @@ TextLabel.clear = function(ignorePrefix=false)
     if ignorePrefix then self.print "" else self.print
 end function
 
-TextLabel.setDisplay = function(display)
+TextLabel.setDisplay = function(self, display)
     self.clear
     self.td = display
     self.print self.lastText
 end function
 
-TextLabel.setPrefix = function(prefix)
+TextLabel.setPrefix = function(self, prefix)
     self.clear
     self.prefix = prefix
+    if self.prefix == null then
+        self.prefix = ""
+    else if not self.prefix isa string then
+        self.prefix = str(prefix)
+    end if
     self.print self.lastText
 end function
 
-TextLabel.move = function(column, row)
+TextLabel.move = function(self, column, row)
     self.clear
     self.column = column
     self.row = row
