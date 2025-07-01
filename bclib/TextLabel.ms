@@ -59,16 +59,6 @@ TextLabel.print = function(text)
     self.td.row = self.row 
     self.td.column = self.column
 
-    if self.color then
-        oldColor = self.td.color
-        self.td.color = self.color
-    end if
-
-    if self.backColor then
-        oldBackColor = self.td.backColor
-        self.td.backColor = self.backColor
-    end if
-
     nullMessage = text == null
     if nullMessage then
         text = ""
@@ -78,20 +68,30 @@ TextLabel.print = function(text)
     if self.maxLen != null and self.maxLen isa number and self.maxLen > 0 and text.len > self.maxLen then text = text[0:self.maxLen]
 
     if nullMessage then
-        self.td.print self.eraseChar * (self.prefix.len + self.lastText.len)
+        self.td.print self.eraseChar * (self.prefix.len + self.lastText.len), self.terminatorChar
     else
+        if self.color then
+            oldColor = self.td.color
+            self.td.color = self.color
+        end if
+
+        if self.backColor then
+            oldBackColor = self.td.backColor
+            self.td.backColor = self.backColor
+        end if
         self.td.print self.prefix + text, self.terminatorChar
+
+        if self.color then self.td.color = oldColor
+        if self.backColor then self.td.backColor = oldBackColor
         dif = text.len - self.lastText.len
         if dif < 0 then self.td.print self.eraseChar * abs(dif), self.terminatorChar
     end if
 
-    if not (nullMessage or text.len == 0) then self.lastText = text
+    //if not (nullMessage or text.len == 0) then self.lastText = text
+    self.lastText = text
 
     self.td.row = oldRow
     self.td.column = oldColumn
-
-    if self.color then self.td.color = oldColor
-    if self.backColor then self.td.backColor = oldBackColor
 end function
 
 TextLabel.clear = function(ignorePrefix=false)
