@@ -104,6 +104,22 @@ TextLabel.setDisplay = function(self, display)
     self.print self.lastText
 end function
 
+TextLabel.setColor = function(self, newColor)
+    if newColor isa string then
+        self.color = newColor
+        return true
+    end if
+    return false
+end function
+
+TextLabel.setBackColor = function(self, newBackColor)
+    if newBackColor isa string then
+        self.backColor = newBackColor
+        return true
+    end if
+    return false
+end function
+
 TextLabel.setPrefix = function(self, prefix)
     self.clear
     self.prefix = prefix
