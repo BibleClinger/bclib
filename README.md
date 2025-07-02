@@ -29,3 +29,7 @@ If you wish to load this library from `/usr2`, do the following:
 3. Download `bclib.ms` and the `bclib` directory from this GitHub repo and place them in the `lib` directory mentioned above.
 4. Run the script `bclib.ms`. Do NOT attempt to import it.
 5. Everything should be loaded in `globals.bclib`
+
+## Documentation
+
+See the Wiki at Github for API documentation.
