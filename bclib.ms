@@ -5,6 +5,7 @@ bigImport = function(directInput)
     import "Enum"
     import "TextLabel"
     import "Functions"
+    import "Timer"
 
     blackmap = {"blackmap":1, "directInput":1, "_":1} // Oddities included in locals for some reason (and itself)
 
