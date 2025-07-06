@@ -1,34 +1,37 @@
 # bclib
 A module for Mini Micro written in MiniScript
 
-## Installation
+This module assumes knowledge of the Mini Micro basics, such as mounting folders/directories and minidisk files. Please see [the official Mini Micro wiki](https://miniscript.org/wiki/How_to_get_started_with_Mini_Micro) if you need assistance with these things.
 
-The easy way:
+## Installation in /usr (Recommended)
 
-1. Mount a directory in Mini Micro to `/usr`.
-2. Create a directory inside that one called `lib`.
-3. Download `bclib.ms` and the `bclib` directory from this GitHub repo and place them in the `lib` directory mentioned above.
+1. Download `bclib.ms` and the `bclib` directory from this GitHub repo and place them both in `/usr/lib`. The tree should look like this:
 
-## Using the Library
+```
+- /usr/lib/bclib.ms
+- /usr/lib/bclib
+```
 
-There are two ways of importing this module. Either one will work if you are using `/usr` as opposed to `/usr2`.
+2. Execute `import "bclib"`. The module is now set up in `globals["bclib"]`.
 
-* Importing bclib via `import "bclib"`. (This will only work if you followed the easy installation instructions above.)
-* Executing the script `bclib.ms`. This will work whether if the lib was mounted to `/usr/lib` or `/usr2/lib`. See the section below "Library in /usr2".
+Note: You can include the import in `startup.ms` if you wish to ensure the module is always loaded on startup/reboot.
 
 ## Module Loader
 
 `bclib.ms` adds `/usr/lib/bclib` and `/usr2/lib/bclib` to `env.importPaths`, attempts to import all of the bclib modules, libraries, and classes, and then removes the import paths.
 
-## Library in /usr2
+This module loader can be either executed or imported, and it will do the same thing.
 
-If you wish to load this library from `/usr2`, do the following:
+## Installation in /usr2 (Advanced)
 
-1. Mount a directory to `/usr2`
-2. Create a directory inside that one called `lib`
-3. Download `bclib.ms` and the `bclib` directory from this GitHub repo and place them in the `lib` directory mentioned above.
-4. Run the script `bclib.ms`. Do NOT attempt to import it.
-5. Everything should be loaded in `globals.bclib`
+If you wish to use this module from `/usr2` instead of `/usr`, then it is important to note that Mini Micro does NOT look inside `/usr2/lib` for importing. Executing `import "bclib"` therefore won't work unless you modify `env.importPaths` yourself. Because this is an inconvenience, the loader has been programmed to work the same if it is executed directly.
+
+If your `/usr2` tree looks like the following, then executing `run "/usr2/lib/bclib"` will be how you load the module in `globals["bclib"]`:
+
+```
+- /usr2/lib/bclib.ms
+- /usr2/lib/bclib
+```
 
 ## Documentation
 
