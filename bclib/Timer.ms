@@ -23,7 +23,7 @@ Timer.pause = function(self)
 end function
 
 Timer.stop = function(self, newTime=null)
-    self.active = false
+    self.pause
     return self.reset(newTime)
 end function
 
@@ -46,7 +46,7 @@ Timer.setData = function(self, data)
 end function
 
 Timer.getData = function(self)
-    return data
+    return self.data
 end function
 
 Timer.tick = function(self, delta)
@@ -56,15 +56,15 @@ Timer.tick = function(self, delta)
             if self.loop then
                 self.reset
             else
-                self.active = false
+                self.pause
             end if
             if @self.callback then
                 if @self.callback isa funcRef then
                     self.callback(self)
-                else if self.callback isa map and self.callback.hasIndex("onTimeout") then
+                else if self.callback isa map and self.callback.get("onTimeout") then
                     self.callback.onTimeout(self)
                 end if
             end if
         end if
     end if
-end functionv
+end function
