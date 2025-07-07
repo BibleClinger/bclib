@@ -3,6 +3,8 @@ A module for Mini Micro written in MiniScript
 
 This module assumes knowledge of the Mini Micro basics, such as mounting folders/directories and minidisk files. Please see [the official Mini Micro wiki](https://miniscript.org/wiki/How_to_get_started_with_Mini_Micro) if you need assistance with these things.
 
+*Note: This module is actively being updated. Its API is not considered stable.*
+
 ## Installation in /usr (Recommended)
 
 1. Download `bclib.ms` and the `bclib` directory from this GitHub repo and place them both in `/usr/lib`. The tree should look like this:
