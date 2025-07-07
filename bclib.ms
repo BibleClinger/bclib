@@ -1,3 +1,6 @@
+import "importUtil" // Dependency
+ensureImport("mapUtil") // Dependency
+
 bigImport = function(directInput)
     env.importPaths.insert 0, "/usr/lib/bclib"
     env.importPaths.insert 1, "/usr2/lib/bclib"
@@ -6,6 +9,7 @@ bigImport = function(directInput)
     import "TextLabel"
     import "Functions"
     import "Timer"
+    import "Engine"
 
     blackmap = {"blackmap":1, "directInput":1, "_":1} // Oddities included in locals for some reason (and itself)
 
