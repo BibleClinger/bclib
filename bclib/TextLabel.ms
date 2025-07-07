@@ -11,16 +11,27 @@ Create = function(column, row=null)
     parse = @bclib.Functions.parseMapArgs // args map parser
 
     instance = new TextLabel
-    instance.td = parse(args, "display", globals.text)
-    instance.column = parse(args, "column", 0)
-    instance.row = parse(args, "row", 0)
-    instance.eraseChar = parse(args, "eraseChar", " ")
-    instance.terminatorChar = parse(args, "terminatorChar", "")
-    instance.color = parse(args, "color", null) // Potential future feature
-    instance.backColor = parse(args, "backColor", null) // Potential future feature
-    instance.maxLen = parse(args, "maxLen", -1)
-    instance.prefix = parse(args, "prefix", "")
-    text = parse(args, "text", null)
+    // instance.td = parse(args, "display", globals.text)
+    //instance.column = parse(args, "column", 0)
+    //instance.row = parse(args, "row", 0)
+    //instance.eraseChar = parse(args, "eraseChar", " ")
+    //instance.terminatorChar = parse(args, "terminatorChar", "")
+    //instance.color = parse(args, "color", null)
+    //instance.backColor = parse(args, "backColor", null)
+    //instance.maxLen = parse(args, "maxLen", -1)
+    //instance.prefix = parse(args, "prefix", "")
+    //text = parse(args, "text", null)
+
+    instance.td = args.get("display", globals.text)
+    instance.column = args.get("column", 0)
+    instance.row = args.get("row", 0)
+    instance.eraseChar = args.get("eraseChar", " ")
+    instance.terminatorChar = args.get("terminatorChar", "")
+    instance.color = args.get("color", null)
+    instance.backColor = args.get("backColor", null)
+    instance.maxLen = args.get("maxLen", -1)
+    instance.prefix = args.get("prefix", "")
+    text = args.get("text", null)
 
     if instance.eraseChar == null then
         instance.eraseChar = " "
