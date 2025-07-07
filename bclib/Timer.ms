@@ -61,10 +61,10 @@ Timer.tick = function(self, delta)
             if @self.callback then
                 if @self.callback isa funcRef then
                     self.callback(self)
-                else if self.callback isa map and self.callback.hasIndex("timedOut") then
-                    self.callback.timedOut(self)
+                else if self.callback isa map and self.callback.hasIndex("onTimeout") then
+                    self.callback.onTimeout(self)
                 end if
             end if
         end if
     end if
-end function
+end functionv
