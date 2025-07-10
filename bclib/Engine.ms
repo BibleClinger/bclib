@@ -1,7 +1,7 @@
 Engine = {}
 
-Create = function(interfaces = null)
-    instance = new Engine
+Engine.Create = function(interfaces = null)
+    instance = new self
     
     instance.interfaces = []
     if interfaces != null then instance.add(interfaces)
@@ -9,7 +9,7 @@ Create = function(interfaces = null)
     return instance
 end function
 
-Make = @Create
+Engine.Make = @Engine.Create
 
 Engine.add = function(self, interfaces)
     if not interfaces isa list then interfaces = [interfaces]
@@ -45,6 +45,7 @@ Engine.run = function(self)
             // Tick all interfaces, and pass delta time
             now = time
             delta = now - lastTime
+            lastTime = now
             if i.get("tick") then
                 i.tick delta
             else if i.get("update") then
@@ -52,7 +53,6 @@ Engine.run = function(self)
             else
                 print "No entry!"
             end if
-            lastTime = now
             yield // 60 Hz
         end for
     end while
@@ -62,3 +62,5 @@ Engine.run = function(self)
         if i.get("deinit") then i.deinit self
     end for
 end function
+
+return Engine

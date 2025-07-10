@@ -1,6 +1,6 @@
 Timer = {}
 
-Create = function(seconds, callback, start=false, loop=false, data=null)
+Timer.Create = function(seconds, callback, start=false, loop=false, data=null)
     if not @callback then return null
     instance = new Timer
     instance.intialTime = seconds
@@ -12,7 +12,7 @@ Create = function(seconds, callback, start=false, loop=false, data=null)
     return instance
 end function
 
-Make = @Create
+Timer.Make = @Timer.Create
 
 Timer.start = function(self)
     self.active = true
@@ -68,3 +68,5 @@ Timer.tick = function(self, delta)
         end if
     end if
 end function
+
+return Timer
