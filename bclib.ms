@@ -10,6 +10,8 @@ bigImport = function(directInput)
     import "Functions"
     import "Timer"
     import "Engine"
+    import "Audio"
+    import "Machine"
 
     blackmap = {"blackmap":1, "directInput":1, "_":1} // Oddities included in locals for some reason (and itself)
 
