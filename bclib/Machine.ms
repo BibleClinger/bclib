@@ -25,13 +25,18 @@ Machine.State = function(id)
     return instance
 end function
 
-Machine.create = function(self, states, initialState, context=null, start=false)
+Machine.Create = function(self, states, initialState, context=null, start=false)
     instance = new self
     instance.previousState = null
     instance.context = context
     instance.queue = []
     if states isa map then
-        instance.states = states
+        instance.states = states + {}
+        for kv in instance.states
+            instance.states[kv.key].machine = function
+                return instance
+            end function
+        end for
     else if states isa list then
         instance.states = {}
         for s in states
@@ -109,6 +114,14 @@ Machine.changeState = function(newState)
     self.pendingState = null
     if self.states[self.currentState].hasIndex("enter") then self.states[self.currentState].enter
     // print "Entered state: " + self.currentState
+end function
+
+Machine.getContext = function(self)
+    return self.context
+end function
+
+Machine.setContext = function(self, context)
+    self.context = context
 end function
 
 return Machine
