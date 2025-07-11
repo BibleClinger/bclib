@@ -15,12 +15,13 @@ Engine.add = function(self, interfaces)
     if not interfaces isa list then interfaces = [interfaces]
     for i in interfaces
         self.interfaces.push i
+        if i.get("init") then i.init self
     end for
 end function
 
 Engine.remove = function(self, interfaces)
     if not interfaces isa list then interfaces = [interfaces]
-    for i in interface
+    for i in interfaces
         index = self.interfaces.indexOf(i)
         if index != null then self.interfaces.remove(index)
     end for
@@ -34,18 +35,19 @@ Engine.run = function(self)
     self.active = true
 
     // Initialize all interfaces
-    for i in self.interfaces
-        if i.get("init") then i.init self
-    end for
+    //for i in self.interfaces
+    //    if i.get("init") then i.init self
+    //end for
 
     // Main engine loop
     lastTime = time
     while self.active
+        now = time
+        delta = now - lastTime
+        lastTime = now
+
         for i in self.interfaces
             // Tick all interfaces, and pass delta time
-            now = time
-            delta = now - lastTime
-            lastTime = now
             if i.get("tick") then
                 i.tick delta
             else if i.get("update") then
