@@ -8,7 +8,7 @@ Timer.Create = function(seconds, callback, start=false, loop=false, data=null)
     instance.callback = @callback
     instance.loop = loop
     instance.data = data
-    if start then instance.start
+    if start then instance.start else self.active = false
     return instance
 end function
 
@@ -32,6 +32,7 @@ Timer.reset = function(self, newTime=null)
 
     if newTime != null then
         self.currentTime = newTime
+        self.initialTime = newTime
     else
         self.currentTime = self.initialTime
     end if
