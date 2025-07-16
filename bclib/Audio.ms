@@ -39,18 +39,23 @@ end function
 
 Audio.load = function(self, clip) 
     // Load a sound file in format of {"ID":{Sound} }
+    // Like "punch":{Sound}
     for kv in clip
         self.clips[kv.key] = kv.value
     end for
 end function
 
-Audio.play = function(self, clip, channel="main")//, volume=1.0, pan=1.0, speed=1.0)
+Audio.play = function(self, clip, channel="main", allowCrunch = false)//, volume=1.0, pan=1.0, speed=1.0)
     // self.clips[clip].play self.channels[channel].volume * volume, self.channels[channel].pan * pan, self.channels[channel].speed * speed
-    self.clips[clip].play self.channels[channel].volume, self.channels[channel].pan, self.channels[channel].speed
+    if allowCrunch or not self.clips[clip].isPlaying then
+        self.clips[clip].play self.channels[channel].volume, self.channels[channel].pan, self.channels[channel].speed
+    end if
 end function
 
 Audio.stop = function(clip, channel="main")
     // Not implemented
+    s = self.clips[clip]
+    s.stop
 end function
 
 Audio.fadeOut = function(clip, channel="main")
