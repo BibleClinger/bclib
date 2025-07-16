@@ -9,7 +9,7 @@ State.create = function(self, id)
 end function
 
 State.on = function(self, event, target, guards=null, unless=null)
-    if not self.transitions.hasIndex(event) then self.transitions[event] = []
+    if not self.transitions.get(event) then self.transitions[event] = []
     if target isa State then target = target.id
     currentTransitionRule = {"target":target, "guards":[], "unless":[]}
     if guards != null then currentTransitionRule.guards = guards
@@ -46,7 +46,7 @@ Machine.Create = function(self, states, initialState, context=null, start=false)
             end function
         end for
     end if
-    if instance.states.hasIndex(initialState) then
+    if instance.states.get(initialState) then
         if initialState isa State then
             instance.currentState = initialState.id
         else
@@ -65,7 +65,13 @@ end function
 
 Machine.start = function(self)
     self.started = true
-    if self.states[self.currentState].hasIndex("enter") then self.states[self.currentState].enter
+    // TODO: "init" all states
+    for s in self.states
+        if self.states[s.key].get("init") then
+            self.states[s.key].init
+        end if
+    end for
+    if self.states[self.currentState].get("enter") then self.states[self.currentState].enter
     @self.raiseEvent = @self.validRaiseEvent
     @self.tick = @self.validTick
 end function
@@ -75,7 +81,7 @@ Machine.dummyTick = function(self, dt)
 end function
 
 Machine.validTick = function(self, dt)
-    if self.states[self.currentState].hasIndex("tick") then self.states[self.currentState].tick dt
+    if self.states[self.currentState].get("tick") then self.states[self.currentState].tick dt
 end function
 
 Machine.dummyRaiseEvent = function(self, event, args)
@@ -86,13 +92,13 @@ Machine.validRaiseEvent = function(self, event, args)
     s = self.states[self.currentState]
     guardHappy = false
     unlessHappy = false
-    if s.transitions.hasIndex(event) then
+    if s.transitions.get(event) then
         for t in s.transitions[event]
             g = t.guards
             u = t.unless
-            if not g or (s.hasIndex(g) and s[g]) then
+            if not g or (s.get(g) and s[g]) then
                 guardHappy = true
-                if not u or (s.hasIndex(u) and s[u]) then
+                if not u or (s.get(u) and s[u]) then
                     unlessHappy = true
                 end if
             end if
@@ -107,12 +113,12 @@ end function
 Machine.changeState = function(newState)
     self.pendingState = newState
     // print "Pending state: " + self.pendingState
-    if self.states[self.currentState].hasIndex("exit") then self.states[self.currentState].exit
+    if self.states[self.currentState].get("exit") then self.states[self.currentState].exit
     // print "Exited state: " + self.currentState
     self.previousState = self.currentState
     self.currentState = newState
     self.pendingState = null
-    if self.states[self.currentState].hasIndex("enter") then self.states[self.currentState].enter
+    if self.states[self.currentState].get("enter") then self.states[self.currentState].enter
     // print "Entered state: " + self.currentState
 end function
 
