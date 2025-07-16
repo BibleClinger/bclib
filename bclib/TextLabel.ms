@@ -1,6 +1,10 @@
 TextLabel = {}
 
-Create = function(column, row=null)
+TextLabel.___bclib = function
+    TextLabel.eJustificationType = bclib.Enum.Create("LEFT CENTER RIGHT PREFIXCENTER CENTERPREFIX")
+end function
+
+TextLabel.Create = function(column, row=null)
     if column isa number and row isa number then
         args = {"column":column, "row": row} // column, row
     else
@@ -31,6 +35,7 @@ Create = function(column, row=null)
     instance.backColor = args.get("backColor", null)
     instance.maxLen = args.get("maxLen", -1)
     instance.prefix = args.get("prefix", "")
+    instance.justification = args.get("justification", TextLabel.eJustificationType.LEFT)
     text = args.get("text", null)
 
     if instance.eraseChar == null then
@@ -62,13 +67,11 @@ Create = function(column, row=null)
     return instance
 end function
 
-Make = @Create
+TextLabel.Make = @TextLabel.Create
 
-TextLabel.print = function(text)
+TextLabel.print = function(self, text)
     oldRow = self.td.row
     oldColumn = self.td.column
-    self.td.row = self.row 
-    self.td.column = self.column
 
     nullMessage = text == null
     if nullMessage then
@@ -78,9 +81,28 @@ TextLabel.print = function(text)
     end if
     if self.maxLen != null and self.maxLen isa number and self.maxLen > 0 and text.len > self.maxLen then text = text[0:self.maxLen]
 
+    self.td.row = self.row 
+    if self.justification == TextLabel.eJustificationType.LEFT then
+        currentColumn = self.column
+        previousColumn = self.column
+    else if self.justification == TextLabel.eJustificationType.CENTER or self.justification == TextLabel.eJustificationType.PREFIXCENTER or self.justification == TextLabel.eJustificationType.CENTERPREFIX then
+        currentColumn = self.column - floor((self.prefix.len + text.len) / 2)
+        previousColumn = self.column - floor((self.prefix.len + self.lastText.len) / 2)
+    else if self.justification == TextLabel.eJustificationType.RIGHT then
+        currentColumn = self.column - (self.prefix.len + text.len) + 1
+        previousColumn = self.column - (self.prefix.len + self.lastText.len) + 1
+    else
+        return // No idea how to handle other values
+    end if
+
+
+    self.td.column = previousColumn
     if nullMessage then
         self.td.print self.eraseChar * (self.prefix.len + self.lastText.len), self.terminatorChar
     else
+        earlySpace = currentColumn - previousColumn
+        if earlySpace > 0 then self.td.print self.eraseChar * earlySpace, self.terminatorChar
+
         if self.color then
             oldColor = self.td.color
             self.td.color = self.color
@@ -90,12 +112,20 @@ TextLabel.print = function(text)
             oldBackColor = self.td.backColor
             self.td.backColor = self.backColor
         end if
-        self.td.print self.prefix + text, self.terminatorChar
+
+        self.td.column = currentColumn
+        if self.justification == TextLabel.eJustificationType.LEFT or self.justification == TextLabel.eJustificationType.CENTER or self.justification == TextLabel.eJustificationType.PREFIXCENTER then
+            self.td.print self.prefix + text, self.terminatorChar
+        else if self.justification == TextLabel.eJustificationType.RIGHT or self.justification == TextLabel.eJustificationType.CENTERPREFIX then
+            self.td.print text + self.prefix, self.terminatorChar
+        end if
 
         if self.color then self.td.color = oldColor
         if self.backColor then self.td.backColor = oldBackColor
-        dif = text.len - self.lastText.len
-        if dif < 0 then self.td.print self.eraseChar * abs(dif), self.terminatorChar
+
+        if earlySpace < 0 then earlySpace = 0
+        lateSpace = self.lastText.len - (text.len + earlySpace)
+        if lateSpace > 0 then self.td.print self.eraseChar * lateSpace, self.terminatorChar
     end if
 
     //if not (nullMessage or text.len == 0) then self.lastText = text
@@ -158,3 +188,5 @@ TextLabel.move = function(self, column, row)
     self.td.row = oldRow
     self.td.column = oldColumn
 end function
+
+return TextLabel
