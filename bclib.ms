@@ -14,15 +14,22 @@ bigImport = function(directInput)
     import "Machine"
 
     blackmap = {"blackmap":1, "directInput":1, "_":1} // Oddities included in locals for some reason (and itself)
+    globals.bclib = {}
 
     if directInput then // Invoked by script
-        globals.bclib = {}
         for e in locals.indexes
-            if not blackmap.hasIndex(e) then globals.bclib[e] = locals[e]
+            if not blackmap.hasIndex(e) then
+                globals.bclib[e] = locals[e]
+                if globals.bclib[e].get("___bclib") then globals.bclib[e].___bclib
+            end if
         end for
     else // Invoked by import directive
         for e in locals.indexes
-            if not blackmap.hasIndex(e) then outer[e] = locals[e]
+            if not blackmap.hasIndex(e) then
+                outer[e] = locals[e]
+                globals.bclib[e] = locals[e]
+                if outer[e].get("___bclib") then outer[e].___bclib
+            end if
         end for
     end if
 
