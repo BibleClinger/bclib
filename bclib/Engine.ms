@@ -1,11 +1,12 @@
 Engine = {}
 
-Engine.Create = function(interfaces = null)
+Engine.Create = function(interfaces = null, context = null, doYield = true)
     instance = new self
+    instance.context = context
+    instance.doYield = doYield
     
     instance.interfaces = []
-    if interfaces != null then instance.add(interfaces)
-
+    instance.add(interfaces)
     return instance
 end function
 
@@ -14,8 +15,10 @@ Engine.Make = @Engine.Create
 Engine.add = function(self, interfaces)
     if not interfaces isa list then interfaces = [interfaces]
     for i in interfaces
-        self.interfaces.push i
-        if i.get("init") then i.init self
+        if not i == null then
+            self.interfaces.push i
+            if i.get("init") then i.init self
+        end if
     end for
 end function
 
@@ -25,6 +28,14 @@ Engine.remove = function(self, interfaces)
         index = self.interfaces.indexOf(i)
         if index != null then self.interfaces.remove(index)
     end for
+end function
+
+Engine.setContext = function(self, context)
+    self.context = context
+end function
+
+Engine.getContext = function(self)
+    return self.context
 end function
 
 Engine.quit = function(self)
@@ -52,10 +63,8 @@ Engine.run = function(self)
                 i.tick delta
             else if i.get("update") then
                 i.update delta
-            else
-                print "No entry!"
             end if
-            yield // 60 Hz
+            if self.doYield then yield // 60 Hz
         end for
     end while
 
