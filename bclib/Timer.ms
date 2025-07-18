@@ -43,11 +43,11 @@ Timer.isActive = function(self)
 end function
 
 Timer.setData = function(self, data)
-    self.data = data
+    self.context = context
 end function
 
 Timer.getData = function(self)
-    return self.data
+    return self.context
 end function
 
 Timer.setContext = function(self, context)
@@ -55,7 +55,7 @@ Timer.setContext = function(self, context)
 end function
 
 Timer.getContext = function(self)
-    return self.getData
+    return self.context
 end function
 
 Timer.tick = function(self, delta)
