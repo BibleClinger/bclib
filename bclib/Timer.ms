@@ -1,13 +1,13 @@
 Timer = {}
 
-Timer.Create = function(seconds, callback, start=false, loop=false, data=null)
+Timer.Create = function(seconds, callback, start=false, loop=false, context=null)
     if not @callback then return null
     instance = new self
     instance.initialTime = seconds
     instance.currentTime = seconds
     instance.callback = @callback
     instance.loop = loop
-    instance.data = data
+    instance.context = context
     if start then instance.start else self.active = false
     return instance
 end function
@@ -48,6 +48,14 @@ end function
 
 Timer.getData = function(self)
     return self.data
+end function
+
+Timer.setContext = function(self, context)
+    self.setData context
+end function
+
+Timer.getContext = function(self)
+    return self.getData
 end function
 
 Timer.tick = function(self, delta)
