@@ -1,7 +1,7 @@
 Enum = {}
 
-Create = function(names, numericals=null)
-    newEnum = new Enum
+Enum.Create = function(names, numericals=null)
+    newEnum = new self
     newEnum._inverse = {} // map of inverted options
     newEnum._k = [] // list of keys, enum names
     newEnum._v = [] // list of values, enum indexes
@@ -20,7 +20,7 @@ Create = function(names, numericals=null)
     // return null // implied
 end function
 
-Make = @Create
+Enum.Make = @Create
 
 Enum.names = function(self, readOnly=false)
     if readOnly then return self._k
@@ -40,3 +40,5 @@ Enum.getName = function(self, id)
     if self._inverse.hasIndex(id) then return self._inverse[id]
     // return null // implied
 end function
+
+return Enum
