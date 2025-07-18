@@ -51,7 +51,7 @@ Timer.getData = function(self)
 end function
 
 Timer.setContext = function(self, context)
-    self.setData context
+    self.context = context
 end function
 
 Timer.getContext = function(self)
