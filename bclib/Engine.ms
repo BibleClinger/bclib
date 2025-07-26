@@ -42,6 +42,18 @@ Engine.quit = function(self)
     self.active = false
 end function
 
+Engine.tick = function(self, delta)
+    for i in self.interfaces
+        // Tick all interfaces, and pass delta time
+        if i.get("tick") then
+            i.tick delta
+        else if i.get("update") then
+            i.update delta
+        end if
+        if self.doYield then yield // 60 Hz
+    end for
+end function
+
 Engine.run = function(self)
     self.active = true
 
@@ -57,15 +69,7 @@ Engine.run = function(self)
         delta = now - lastTime
         lastTime = now
 
-        for i in self.interfaces
-            // Tick all interfaces, and pass delta time
-            if i.get("tick") then
-                i.tick delta
-            else if i.get("update") then
-                i.update delta
-            end if
-            if self.doYield then yield // 60 Hz
-        end for
+        self.tick delta
     end while
 
     // Deinitialize all interfaces
