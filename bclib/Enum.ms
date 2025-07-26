@@ -20,7 +20,7 @@ Enum.Create = function(names, numericals=null)
     // return null // implied
 end function
 
-Enum.Make = @Create
+Enum.Make = @Enum.Create
 
 Enum.names = function(self, readOnly=false)
     if readOnly then return self._k
