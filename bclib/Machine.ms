@@ -110,7 +110,7 @@ Machine.validRaiseEvent = function(self, event, args)
     end if
 end function
 
-Machine.changeState = function(newState)
+Machine.changeState = function(self, newState)
     self.pendingState = newState
     // print "Pending state: " + self.pendingState
     if self.states[self.currentState].get("exit") then self.states[self.currentState].exit
@@ -120,6 +120,10 @@ Machine.changeState = function(newState)
     self.pendingState = null
     if self.states[self.currentState].get("enter") then self.states[self.currentState].enter
     // print "Entered state: " + self.currentState
+end function
+
+Machine.getPreviousState = function(self)
+    return self.previousState
 end function
 
 Machine.getContext = function(self)
