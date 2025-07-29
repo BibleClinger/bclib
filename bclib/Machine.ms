@@ -53,10 +53,10 @@ Machine.Create = function(self, states, initialState, context=null, start=false)
             instance.currentState = initialState
         end if
         if start then
-            Machine.start
+            instance.start
         else
-            @instance.raiseEvent = @instance.dummyRaiseEvent
-            @instance.tick = @instance.dummyTick
+            //@instance.raiseEvent = @instance.dummyRaiseEvent
+            //@instance.tick = @instance.dummyTick
         end if
         return instance
     end if
@@ -72,23 +72,58 @@ Machine.start = function(self)
         end if
     end for
     if self.states[self.currentState].get("enter") then self.states[self.currentState].enter
-    @self.raiseEvent = @self.validRaiseEvent
-    @self.tick = @self.validTick
+    //@self.raiseEvent = @self.validRaiseEvent
+    //@self.tick = @self.validTick
 end function
 
 Machine.dummyTick = function(self, dt)
     // Empty function. Does nothing
 end function
 
-Machine.validTick = function(self, dt)
+Machine.tick = function(self, dt)
     if self.states[self.currentState].get("tick") then self.states[self.currentState].tick dt
+end function
+
+Machine.validTick = function(self, dt)
+    if self.started then 
+        if self.states[self.currentState].get("tick") then 
+            self.states[self.currentState].tick dt
+        end if
+    end if
 end function
 
 Machine.dummyRaiseEvent = function(self, event, args)
     // Empty function. Does nothing
 end function
 
+Machine.raiseEvent = function(self, event, args)
+    if self.started then
+       // logger.debug "Raising an event: " + event + " ; args: " + args
+        s = self.states[self.currentState]
+        guardHappy = false
+        unlessHappy = false
+        if s.transitions.get(event) then
+            for t in s.transitions[event]
+                g = t.guards
+                u = t.unless
+                if not g or (s.get(g) and s[g]) then
+                    guardHappy = true
+                    if not u or (s.get(u) and s[u]) then
+                        unlessHappy = true
+                    end if
+                end if
+                if guardHappy and unlessHappy then
+                   // print "Changing state..."
+                    self.changeState t.target
+                    break
+                end if
+            end for
+        end if
+    end if
+end function
+
 Machine.validRaiseEvent = function(self, event, args)
+    logger.debug "Raising an event: " + event + " ; args: " + args
     s = self.states[self.currentState]
     guardHappy = false
     unlessHappy = false
@@ -103,6 +138,7 @@ Machine.validRaiseEvent = function(self, event, args)
                 end if
             end if
             if guardHappy and unlessHappy then
+               // print "Changing state..."
                 self.changeState t.target
                 break
             end if
@@ -111,6 +147,7 @@ Machine.validRaiseEvent = function(self, event, args)
 end function
 
 Machine.changeState = function(self, newState)
+    //print "we're in change state"
     self.pendingState = newState
     // print "Pending state: " + self.pendingState
     if self.states[self.currentState].get("exit") then self.states[self.currentState].exit

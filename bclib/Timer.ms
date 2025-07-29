@@ -62,10 +62,10 @@ Timer.tick = function(self, delta)
     if self.active then
         self.currentTime -= delta
         if self.currentTime <= 0 then
-            if self.loop then
-                self.reset
-            else
-                self.pause
+            self.currentTime = 0
+            self.reset // We reset timers back to normal so they can be started again
+            if not self.loop then
+                self.pause // We pause timers that are not on a loop
             end if
             if @self.callback then
                 if @self.callback isa funcRef then
@@ -77,5 +77,13 @@ Timer.tick = function(self, delta)
         end if
     end if
 end function
+
+Timer.timeLeft = function(self)
+    return self.currentTime
+end function
+
+//Timer.deinit = function(self, engine)
+    //engine.remove self
+//end function
 
 return Timer

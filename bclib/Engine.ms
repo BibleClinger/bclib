@@ -13,20 +13,19 @@ end function
 Engine.Make = @Engine.Create
 
 Engine.add = function(self, interfaces)
-    if not interfaces isa list then interfaces = [interfaces]
+    if not @interfaces isa list then @interfaces = [@interfaces]
     for i in interfaces
         if not i == null then
-            self.interfaces.push i
-            if i.get("init") then i.init self
+            self.interfaces.push @i
+            if i isa map then if i.get("init") then i.init self
         end if
     end for
 end function
 
 Engine.remove = function(self, interfaces)
-    if not interfaces isa list then interfaces = [interfaces]
+    if not @interfaces isa list then @interfaces = [@interfaces]
     for i in interfaces
-        index = self.interfaces.indexOf(i)
-        if index != null then self.interfaces.remove(index)
+        self.interfaces.removeVal @i
     end for
 end function
 
@@ -45,13 +44,16 @@ end function
 Engine.tick = function(self, delta)
     for i in self.interfaces
         // Tick all interfaces, and pass delta time
-        if i.get("tick") then
-            i.tick delta
-        else if i.get("update") then
-            i.update delta
+        if @i isa funcRef then i delta
+        else
+            if i.get("tick") then
+                i.tick delta
+            else if i.get("update") then
+                i.update delta
+            end if
         end if
-        if self.doYield then yield // 60 Hz
     end for
+    if self.doYield then yield // 60 Hz
 end function
 
 Engine.run = function(self)

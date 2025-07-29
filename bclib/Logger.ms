@@ -120,7 +120,7 @@ Logger.format = function(self, msg, level)
     return "[" + time + "] : [" + self.eLevels.getName(level) + "] " + msg + char(10)
 end function
 
-Logger.deinit = function(self)
+Logger.deinit = function(self, engine)
     if self.destination isa FileHandle then self.destination.close
 end function
 
