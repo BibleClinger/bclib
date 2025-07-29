@@ -14,10 +14,10 @@ Engine.Make = @Engine.Create
 
 Engine.add = function(self, interfaces)
     if not @interfaces isa list then @interfaces = [@interfaces]
-    for i in interfaces
-        if not i == null then
+    for @i in interfaces
+        if not @i == null then
             self.interfaces.push @i
-            if i isa map then if i.get("init") then i.init self
+            if @i isa map then if i.get("init") then i.init self
         end if
     end for
 end function
@@ -26,6 +26,15 @@ Engine.remove = function(self, interfaces)
     if not @interfaces isa list then @interfaces = [@interfaces]
     for i in interfaces
         self.interfaces.removeVal @i
+    end for
+end function
+
+Engine.deinit = function(self)
+    // Deinitialize all interfaces
+    for @i in interfaces
+        if not @i == null then
+            if @i isa map then if i.get("deinit") then i.init self
+        end if
     end for
 end function
 
@@ -74,10 +83,7 @@ Engine.run = function(self)
         self.tick delta
     end while
 
-    // Deinitialize all interfaces
-    for i in self.interfaces
-        if i.get("deinit") then i.deinit self
-    end for
+    self.deinit
 end function
 
 return Engine
