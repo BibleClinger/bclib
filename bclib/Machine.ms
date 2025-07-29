@@ -81,7 +81,11 @@ Machine.dummyTick = function(self, dt)
 end function
 
 Machine.tick = function(self, dt)
-    if self.states[self.currentState].get("tick") then self.states[self.currentState].tick dt
+    if self.started then
+        if self.states[self.currentState].get("tick") then
+            self.states[self.currentState].tick dt
+        end if
+    end if
 end function
 
 Machine.validTick = function(self, dt)
@@ -98,7 +102,6 @@ end function
 
 Machine.raiseEvent = function(self, event, args)
     if self.started then
-       // logger.debug "Raising an event: " + event + " ; args: " + args
         s = self.states[self.currentState]
         guardHappy = false
         unlessHappy = false
@@ -113,7 +116,6 @@ Machine.raiseEvent = function(self, event, args)
                     end if
                 end if
                 if guardHappy and unlessHappy then
-                   // print "Changing state..."
                     self.changeState t.target
                     break
                 end if
@@ -123,7 +125,6 @@ Machine.raiseEvent = function(self, event, args)
 end function
 
 Machine.validRaiseEvent = function(self, event, args)
-    logger.debug "Raising an event: " + event + " ; args: " + args
     s = self.states[self.currentState]
     guardHappy = false
     unlessHappy = false
@@ -138,7 +139,6 @@ Machine.validRaiseEvent = function(self, event, args)
                 end if
             end if
             if guardHappy and unlessHappy then
-               // print "Changing state..."
                 self.changeState t.target
                 break
             end if
@@ -147,16 +147,12 @@ Machine.validRaiseEvent = function(self, event, args)
 end function
 
 Machine.changeState = function(self, newState)
-    //print "we're in change state"
     self.pendingState = newState
-    // print "Pending state: " + self.pendingState
     if self.states[self.currentState].get("exit") then self.states[self.currentState].exit
-    // print "Exited state: " + self.currentState
     self.previousState = self.currentState
     self.currentState = newState
     self.pendingState = null
     if self.states[self.currentState].get("enter") then self.states[self.currentState].enter
-    // print "Entered state: " + self.currentState
 end function
 
 Machine.getPreviousState = function(self)
