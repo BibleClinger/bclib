@@ -16,6 +16,7 @@ Timer.Make = @Timer.Create
 
 Timer.start = function(self)
     self.active = true
+    return self
 end function
 
 Timer.pause = function(self)
@@ -25,6 +26,14 @@ end function
 Timer.stop = function(self, newTime=null)
     self.pause
     return self.reset(newTime)
+end function
+
+Timer.setLoop = function(self, loop=true)
+    self.loop = loop
+end function
+
+Timer.getLoop = function(self)
+    return self.loop
 end function
 
 Timer.reset = function(self, newTime=null)
@@ -80,6 +89,10 @@ end function
 
 Timer.timeLeft = function(self)
     return self.currentTime
+end function
+
+Timer.timeTotal = function(self)
+    return self.initialTime
 end function
 
 //Timer.deinit = function(self, engine)
