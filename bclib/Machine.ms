@@ -57,6 +57,7 @@ Machine.Create = function(self, states, initialState, context=null, start=false)
         else
             //@instance.raiseEvent = @instance.dummyRaiseEvent
             //@instance.tick = @instance.dummyTick
+            self.started = false
         end if
         return instance
     end if
@@ -76,15 +77,21 @@ Machine.start = function(self)
     //@self.tick = @self.validTick
 end function
 
+Machine.isStarted = function(self)
+    return self.started
+end function
+
 Machine.dummyTick = function(self, dt)
     // Empty function. Does nothing
 end function
 
 Machine.tick = function(self, dt)
     if self.started then
+        if self.get("pretick") then self.pretick(dt)
         if self.states[self.currentState].get("tick") then
             self.states[self.currentState].tick dt
         end if
+        if self.get("posttick") then self.posttick(dt)
     end if
 end function
 
@@ -157,6 +164,10 @@ end function
 
 Machine.getPreviousState = function(self)
     return self.previousState
+end function
+
+Machine.getCurrentState = function(self)
+    return self.currentState
 end function
 
 Machine.getContext = function(self)
