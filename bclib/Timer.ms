@@ -29,7 +29,7 @@ Timer.stop = function(self, newTime=null)
 end function
 
 Timer.setLoop = function(self, loop=true)
-    self.loop = loop
+    self.loop = loop == true
 end function
 
 Timer.getLoop = function(self)
